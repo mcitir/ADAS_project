@@ -4,6 +4,7 @@
 % Uncertainties." (2017).
 
 clear;clc;
+load("10_sec_multivehicle.mat")
 %% Track Vehicles Using Lidar: From Point Cloud to Track List
 % Load data if unavailable. The lidar data is stored as a cell array of
 % pointCloud objects.
@@ -18,6 +19,24 @@ if ~exist('lidarData','var')
     finalTime = 35;
     [lidarData, imageData] = loadLidarAndImageData(datasetFolder,initTime,finalTime); %function
 end
+lidarData_from_matlab_source_link = lidarData;
+
+%% Conversion of Point Clouds to lidarData Format
+file_name = ego_red_10sec;
+lidarData_new{size(file_name,2),1} = []; 
+for i=1:size(file_name,2)
+    lidarData_new{i,1} = file_name(i).PointClouds{1,1};
+end
+
+% structured to unstructured
+lidarData = lidarData_new;
+
+% To remove NaN, Inf point clouds, 
+% set argument removingInvalidPoints as true| default is false
+% FUNCTION unstructuredLidarDataSet = structured2unstructuredPointCloud(lidarDataSet, removingInvalidPoints)
+
+lidarData = structured2unstructuredPointCloud(lidarData,true); 
+
 
 %% 
 % Set random seed to generate reproducible results.
@@ -135,3 +154,11 @@ if displayObject.RecordGIF
     writeAnimatedGIF(displayObject,310,330,'jpda','processing');
     writeAnimatedGIF(displayObject,120,140,'imm','details');
 end
+
+% figure;
+% for si=1:size(lidarData,1)
+%     %pcshow(lidarData{si,1}.Location)
+%     pcshowpair(ego_red_10sec(si).PointClouds{1,1},...
+%         ego_blue_10sec(si).PointClouds{1,1})
+%     pause(0.05)
+% end
