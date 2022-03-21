@@ -43,7 +43,7 @@ classdef HelperBoundingBoxDetector < matlab.System
     % Ego vehicle radius to remove ego vehicle point cloud.
     properties
         % EgoVehicleRadius Radius of ego vehicle
-        EgoVehicleRadius = 3;
+        EgoVehicleRadius = 2;
     end
     
     properties

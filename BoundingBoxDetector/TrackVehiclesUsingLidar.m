@@ -8,21 +8,28 @@ load("10_sec_multivehicle.mat")
 %% Track Vehicles Using Lidar: From Point Cloud to Track List
 % Load data if unavailable. The lidar data is stored as a cell array of
 % pointCloud objects.
-if ~exist('lidarData','var')
-    dataURL = 'https://ssd.mathworks.com/supportfiles/lidar/data/TrackVehiclesUsingLidarExampleData.zip';
-    datasetFolder = fullfile(tempdir,'LidarExampleDataset');
-    if ~exist(datasetFolder,'dir')
-       unzip(dataURL,datasetFolder);
-    end
-    % Specify initial and final time for simulation.
-    initTime = 0;
-    finalTime = 35;
-    [lidarData, imageData] = loadLidarAndImageData(datasetFolder,initTime,finalTime); %function
-end
-lidarData_from_matlab_source_link = lidarData;
+% if ~exist('lidarData','var')
+%     dataURL = 'https://ssd.mathworks.com/supportfiles/lidar/data/TrackVehiclesUsingLidarExampleData.zip';
+%     datasetFolder = fullfile(tempdir,'LidarExampleDataset');
+%     if ~exist(datasetFolder,'dir')
+%        unzip(dataURL,datasetFolder);
+%     end
+%     % Specify initial and final time for simulation.
+%     initTime = 0;
+%     finalTime = 35;
+%     [lidarData, imageData] = loadLidarAndImageData(datasetFolder,initTime,finalTime); %function
+% end
+% lidarData_from_matlab_source_link = lidarData;
+
+%imageData= uint8(1);
+
+datasetFolder = fullfile('LidarExampleDataset');
+initTime = 0;
+finalTime = 35;
+[lidarData_from_matlab_source_link, imageData] = loadLidarAndImageData(datasetFolder,initTime,finalTime); %function
 
 %% Conversion of Point Clouds to lidarData Format
-file_name = ego_red_10sec;
+file_name = ego_blue_10sec;
 lidarData_new{size(file_name,2),1} = []; 
 for i=1:size(file_name,2)
     lidarData_new{i,1} = file_name(i).PointClouds{1,1};
@@ -78,7 +85,7 @@ tracker = trackerJPDA('FilterInitializationFcn',filterInitFcn,...
     'HitMissThreshold',0.1);
 
 %% Create display
-displayObject = HelperLidarExampleDisplay(imageData{1},...
+displayObject = HelperLidarExampleDisplay([],... %imageData{1}, reference image deleted
     'PositionIndex',[1 3 6],...
     'VelocityIndex',[2 4 7],...
     'DimensionIndex',[9 10 11],...
