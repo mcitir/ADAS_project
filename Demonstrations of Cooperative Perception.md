@@ -1,6 +1,3 @@
-# Cooperative Driving
-
-# Publications Read
 ## Demonstrations of Cooperative Perception: Safety and Robustness in Connected and Automated Vehicle Operations, *Mao Shan, 12.2020*
 .
 ### Keywords
