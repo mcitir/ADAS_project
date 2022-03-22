@@ -15,6 +15,19 @@
 - Data elements (DEs)
 - Data Frames (DFs)
 - Infrastructure-assisted CP
+- **GMPHD** or Probability hypothesis density (PHD) using a mixture of Gaussian components, [link (MATLAB)](https://www.mathworks.com/help/fusion/ref/gmphd.html)
+- Decentralized Multi-Target Tracking with Multiple Quadrotors using a PHD Filter [video](https://www.youtube.com/watch?v=XHHjKC30PV4) and [paper](https://arxiv.org/pdf/2012.02340.pdf) 
+  - A decentralized multi-robot strategy for tracking multiple stationary targets in which the robots search according to a discrete-time-discrete-state (DTDS) Markov chain model
+  - estimate number of targets
+  - states using Probability Hypothesis Density (PHD) filters.
+  - Rely on local sensing and local communication
+  - Not required the robot to maintain a connected communication network
+  - Generalize consensus-based target search strategy in Shirsat et al. SSRR 2020 to multiple targets.
+  - Method:
+    - Markov Chains & Renewal Reward Process
+      - Probability Transition Matrix P
+    
+
 ### Notes
 - The ETSI CPMs convey abstract representations of perceived objects instead of raw sensory data
   - facilitating the interoperability between ITS-Ss of different types and from different manufacturers
@@ -69,7 +82,17 @@ of CAV penetration rate [27]
 - The maps are based on pole and building corner features extracted from lidar point clouds [60]
 - ETSI CPM through Conda MP5 OBU is decoded from binary ASN.1 and transformed with its uncertainty to local frame of referance of the CAV, which also takes into account the estimated egocentric pose of the CAV in self-localisation
 - **Following the coordinate transformation with uncertainty, the perceived objects information from the IRSU are fused into a multiple road user tracking algorithm that is a variant of the GMPHD filter running within the local frame of the receiving CAV.**
+- Tracked states of road users include their position, heading, and speed.
+- The general formulation of the GMPHD tracker is to use a **Gaussian mixture** to represent the **joint distribution of the group of tracked targets**.
 - a Lanelet2 map is built for every experiment site, which includes road network,lane layout and traffic rules such as speed limits, traffic lights and right-of-way rules
+- The **navigation subsystem in the CAV** is responsible for path planning, monitoring and controlling the motion of the vehicle from the current position to the goal
+  - A hybrid A* path planner presented [61]
+  - maintains a moving grid-based local cost map that considers: 
+    - structural constraints, such as road and lane boundaries provided by Lanelet2 map
+    - obstacles picked up by local perception sensors
+    - current and future estimates of road users detected and broadcasting by IRSU
+- Figure:
+![](/images/2022-03-22-13-10-26.png)
 
 ### Softwares
 - [27,28], SUMO 
