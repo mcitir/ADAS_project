@@ -64,8 +64,20 @@ of CAV penetration rate [27]
 - quantitative comparison of V2V and V2I connectivity on improving sensing redundancy and collaborative sensing coverage for CAV applications
 - Managing Automated Vehicles Enhances Network (MAVEN) [45], TransAID [46] and IMAGinE [47]
 
+### Tasks done (Short) 
+- sensory data fusion of images and lidar point clouds
+- classification of objects (YOLOv3)
+- Lidar Point Cloud projection on Image Coordinate Frame
+- Segmentation, Clustration, Labeling
+- Encoding Fused Data into Cooperative Perception Message (CPM by ETSI)
+- Broadcasting of CPM
+- Subscribing ETSI CPM data by vehicle
+- GMPHD filter to track multiple road users
+- Path planning by navigation subsystem, A* path planner
+- Figure:
+![](/images/2022-03-22-13-10-26.png)
 
-### Tasks done
+### Tasks done (Long) 
 - sensory data fusion of images and lidar point clouds for pedestrian and vehicle detection
 - the road users within the images are classified/detected using YOLOv3 that runs on GPU.
 - the lidar point clouds are projected to the image coordinate system with proper extrinsic sensor calibration parameters
@@ -88,8 +100,7 @@ of CAV penetration rate [27]
     - structural constraints, such as road and lane boundaries provided by Lanelet2 map
     - obstacles picked up by local perception sensors
     - current and future estimates of road users detected and broadcasting by IRSU
-- Figure:
-![](/images/2022-03-22-13-10-26.png)
+
 
 ### Softwares
 - [27,28], SUMO 
