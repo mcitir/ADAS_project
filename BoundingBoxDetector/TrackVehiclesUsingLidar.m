@@ -123,7 +123,8 @@ for i = 1:numel(lidarData)
     % Pass detections to track.
     [confirmedTracks,tentativeTracks,allTracks,info] = tracker(detections,time,detectableTracksInput);
     numTracks(i,1) = numel(confirmedTracks);
-    
+    tempDisp= ["Confirmed", confirmedTracks];
+    disp(tempDisp)
     % Get model probabilities from IMM filter of each track using
     % getTrackFilterProperties function of the tracker.
     modelProbs = zeros(2,numel(confirmedTracks));
