@@ -48,11 +48,11 @@
   - cluster height information to form a 3D Box. 
   - minimum area rectangle augmented with L-Shape fitting 
 - Object Tracking
-![](2022-03-25-15-10-50.png)
+![](/images/2022-03-25-15-10-50.png)
 - Polar to Cartesian Coondinate transformation by Velodyne Lidar Sensor digital processing unit and extension the KITTI dataset
 - A point tracking is used instead of extended object tracking [100]
 - Tracking target dynamic motion model is described mathematically by a discrete time, stochastic state-space model
-![](2022-03-25-15-29-31.png)
+![](/images/2022-03-25-15-29-31.png)
 
 
 
