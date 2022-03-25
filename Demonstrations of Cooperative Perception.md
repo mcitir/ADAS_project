@@ -72,6 +72,7 @@ of CAV penetration rate [27]
 - Encoding Fused Data into Cooperative Perception Message (CPM by ETSI)
 - Broadcasting of CPM
 - Subscribing ETSI CPM data by vehicle
+- Coordinate transformation, Global {G}, Sensing Frame {S}, Recepent Frame (Vehicle) {R} , page 12/31
 - GMPHD filter to track multiple road users
 - Path planning by navigation subsystem, A* path planner
 - Figure:
@@ -100,7 +101,7 @@ of CAV penetration rate [27]
     - structural constraints, such as road and lane boundaries provided by Lanelet2 map
     - obstacles picked up by local perception sensors
     - current and future estimates of road users detected and broadcasting by IRSU
-
+- Coordinate Transformation of Perceived Objects with Uncertainty
 
 ### Softwares
 - [27,28], SUMO 

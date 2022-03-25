@@ -21,6 +21,7 @@ load("10_sec_multivehicle.mat")
 % end
 % lidarData_from_matlab_source_link = lidarData;
 
+%imageData= uint8(1);
 
 datasetFolder = fullfile('LidarExampleDataset');
 initTime = 0;
@@ -84,7 +85,7 @@ tracker = trackerJPDA('FilterInitializationFcn',filterInitFcn,...
     'HitMissThreshold',0.1);
 
 %% Create display
-displayObject = HelperLidarExampleDisplay(imageData{1},...
+displayObject = HelperLidarExampleDisplay([],... %imageData{1}, reference image deleted
     'PositionIndex',[1 3 6],...
     'VelocityIndex',[2 4 7],...
     'DimensionIndex',[9 10 11],...
@@ -122,13 +123,14 @@ for i = 1:numel(lidarData)
     % Pass detections to track.
     [confirmedTracks,tentativeTracks,allTracks,info] = tracker(detections,time,detectableTracksInput);
     numTracks(i,1) = numel(confirmedTracks);
-    
+
     % Get model probabilities from IMM filter of each track using
     % getTrackFilterProperties function of the tracker.
     modelProbs = zeros(2,numel(confirmedTracks));
     for k = 1:numel(confirmedTracks)
         c1 = getTrackFilterProperties(tracker,confirmedTracks(k).TrackID,'ModelProbabilities');
         modelProbs(:,k) = c1{1};
+        confirmedTracks(k).state
     end
     
     % Update display
