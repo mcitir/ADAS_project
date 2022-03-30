@@ -106,6 +106,18 @@ allTracks = struct([]);
 % Initiate variables for comparing MATLAB and MEX simulation.
 numTracks = zeros(numel(lidarData),2);
 
+
+% testFieldnames = fieldnames(toStruct(objectTrack));
+% strTest = cellstr(testFieldnames)
+% testStruct = struct('test',{},'test2',{});
+% 
+% colConfirmedTracks = struct;
+% colTentativeTracks = struct;
+% testObjStruct = toStruct(objectTrack);
+% 
+% unpackStruct = @(testStruct) cellfun(@(name) assignin('base',name,getfield(testStruct,name)),fieldnames(testStruct));
+% unpackStruct(testObjStruct);
+
 % Loop through the data
 for i = 1:numel(lidarData)
     % Update time
@@ -123,7 +135,13 @@ for i = 1:numel(lidarData)
     % Pass detections to track.
     [confirmedTracks,tentativeTracks,allTracks,info] = tracker(detections,time,detectableTracksInput);
     numTracks(i,1) = numel(confirmedTracks);
-
+    if i==1
+        colConfirmedTracks =toStruct(confirmedTracks);
+        colTentativeTracks = toStruct(tentativeTracks);
+    else
+        colConfirmedTracks = [colConfirmedTracks; toStruct(confirmedTracks)]; %#ok<AGROW> 
+        colTentativeTracks = [colTentativeTracks;toStruct(tentativeTracks)]; %#ok<AGROW> 
+    end
     % Get model probabilities from IMM filter of each track using
     % getTrackFilterProperties function of the tracker.
     modelProbs = zeros(2,numel(confirmedTracks));
