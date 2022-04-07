@@ -175,9 +175,7 @@ for i = 1:numel(lidarData)
                   confirmedTracksGlob(numC,1).State(6);...
                   1];
         pointsGlob=local2glob(pose,points);
-        confirmedTracksGlob(numC,1).State(1)=pointsGlob(1);
-        confirmedTracksGlob(numC,1).State(3)=pointsGlob(2);
-        confirmedTracksGlob(numC,1).State(6)=pointsGlob(3);
+        confirmedTracksGlob(numC,1).State(1)=points(1);
     end
     %cell(confirmedTracks)
     if i==1
@@ -233,7 +231,7 @@ figure
 scatter(convertedTracks(:,1),...
          convertedTracks(:,2));
 
-
+vehicle_current_pos
 
 % tbl = table(positionListfromConfirmedTracks)
 % plot3(positionListfromConfirmedTracks(numTo,1),...
