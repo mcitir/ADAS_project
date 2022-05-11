@@ -9,20 +9,28 @@ clc;
 load("10_sec_multivehicle.mat")
 
 %% Records Actors Position
+ego1_dataset = ego_blue_10sec;
+% ego2_dataset = ego_red_10sec;
 %%% Blue Vehicle
-for tt=1:numel(ego_blue_10sec)
-    egoBluePose(tt,:) = ego_blue_10sec(tt).ActorPoses(1).Position;
+for tt=1:numel(ego1_dataset)
+    egoBluePose(tt,:) = ego1_dataset(tt).ActorPoses(1).Position;
 end
 figure
-scatter(egoBluePose(:,1),...
-         egoBluePose(:,2),'MarkerFaceColor','b');
-%%% Red Vehicle
-for tt=1:numel(ego_blue_10sec)
-    egoRedPose(tt,:) = ego_red_10sec(tt).ActorPoses(1).Position;
-end
-hold
-scatter(egoRedPose(:,1),...
-         egoRedPose(:,2),'MarkerEdgeColor','r');
+
+swarmchart(egoBluePose(:,1),...
+         egoBluePose(:,2),'filled','MarkerFaceAlpha',0.5,'MarkerEdgeAlpha',0.5);
+axis([round(min(egoBluePose(:,1))-10),...
+      round((max(egoBluePose(:,1))+10)),... %inf,inf]);
+      round(min(egoBluePose(:,2))),...
+      round((max(egoBluePose(:,2))))]);
+axis equal
+% %%% Red Vehicle
+% for tt=1:numel(ego2_dataset)
+%     egoRedPose(tt,:) = ego2_dataset(tt).ActorPoses(1).Position;
+% end
+% hold
+% scatter(egoRedPose(:,1),...
+%          egoRedPose(:,2),'MarkerEdgeColor','r');
 %% Track Vehicles Using Lidar: From Point Cloud to Track List
 % Load data if unavailable. The lidar data is stored as a cell array of
 % pointCloud objects.
@@ -46,14 +54,47 @@ initTime = 0;
 finalTime = 35;
 [lidarData_from_matlab_source_link, imageData] = loadLidarAndImageData(datasetFolder,initTime,finalTime); %function
 
+
 %% Conversion of Point Clouds to lidarData Format
-file_name = ego_blue_10sec;
-lidarData_new{size(file_name,2),1} = []; 
+file_name = ego1_dataset;
+lidarData_new{size(file_name,2),1} = [];
+player = pcplayer([-100 100],[-100 100],[-100 100]);
 for i=1:size(file_name,2)
     lidarData_new{i,1} = file_name(i).PointClouds{1,1};
+    view(player,lidarData_new{i,1})
+    pause(0.1)
 end
 
-% structured to unstructured
+
+
+
+%% Coordinate Transformation of Point Cloud from Vehicle to World Coordinate
+
+for ps=1:size(file_name,2)
+    %[x y z roll pitch yaw]
+pose = [file_name(ps).ActorPoses(1).Position,... % ActorPoses(ActorID=1) for blue vehicle
+        deg2rad(file_name(ps).ActorPoses(1).Roll),...
+        deg2rad(file_name(ps).ActorPoses(1).Pitch),...
+        deg2rad(file_name(ps).ActorPoses(1).Yaw)];
+
+euler = [pose(4) pose(5) pose(6)];
+rotEgo2World = eul2rotm(euler, 'XYZ');
+trEgo2World = [pose(1) pose(2) pose(3)];
+tform = rigid3d(rotEgo2World, trEgo2World);
+lidarData_new_transformed{ps,1} = pctransform(lidarData_new{ps,1},tform);
+end
+% Player for point cloud
+player = pcplayer([-100 100],[-7 7],[0 5]);
+player2 = pcplayer([-300 300],[-300 300],[0 5]);
+
+
+for i=1:size(file_name,2)
+    view(player,lidarData_new{i,1})
+    view(player2,lidarData_new_transformed{i,1})
+    pause(0.1)
+end
+
+%% structured to unstructured
 lidarData = lidarData_new;
 
 % To remove NaN, Inf point clouds, 
@@ -145,6 +186,8 @@ numTracks = zeros(numel(lidarData),2);
 % unpackStruct(testObjStruct);
 
 % Loop through the data
+dispRes=[];
+
 for i = 1:numel(lidarData)
     % Update time
     time = time + dT;
@@ -161,19 +204,24 @@ for i = 1:numel(lidarData)
     % Pass detections to track.
     [confirmedTracks,tentativeTracks,allTracks,info] = tracker(detections,time,detectableTracksInput); %#ok<*SAGROW> 
     numTracks(i,1) = numel(confirmedTracks);
-
+%     if exist("confirmedTracks")
+%         disp('Exist')
+%         dispRes = vertcat(dispRes,1); %#ok<AGROW> 
+%     else
+%         disp('Not Exist')
+%         dispRes = vertcat(dispRes,0); %#ok<AGROW> 
+%     end
     % Convert tracks to Global Coordinate Frame
     confirmedTracksGlob = confirmedTracks;
     for numC=1:numel(confirmedTracksGlob)
         
-        pose = [ego_blue_10sec(i).ActorPoses(1).Position... % ActorPoses(ActorID=1) for blue vehicle
-                ego_blue_10sec(i).ActorPoses(1).Roll...
-                ego_blue_10sec(i).ActorPoses(1).Pitch...
+        pose = [ego_blue_10sec(i).ActorPoses(1).Position,... % ActorPoses(ActorID=1) for blue vehicle
+                ego_blue_10sec(i).ActorPoses(1).Roll,...
+                ego_blue_10sec(i).ActorPoses(1).Pitch,...
                 ego_blue_10sec(i).ActorPoses(1).Yaw];
-        points = [confirmedTracksGlob(numC,1).State(1);...
-                  confirmedTracksGlob(numC,1).State(3);...
-                  confirmedTracksGlob(numC,1).State(6);...
-                  1];
+        points = [confirmedTracksGlob(numC,1).State(1), ...
+                  confirmedTracksGlob(numC,1).State(3), ...
+                  confirmedTracksGlob(numC,1).State(6)];
         pointsGlob=local2glob(pose,points);
         confirmedTracksGlob(numC,1).State(1)=pointsGlob(1);
         confirmedTracksGlob(numC,1).State(3)=pointsGlob(2);
@@ -182,9 +230,11 @@ for i = 1:numel(lidarData)
     %cell(confirmedTracks)
     if i==1
         colConfirmedTracks =toStruct(confirmedTracks);
+        colConfirmedTracksGlob =toStruct(confirmedTracksGlob);
         colTentativeTracks = toStruct(tentativeTracks);
     else
-        colConfirmedTracks = [colConfirmedTracks; toStruct(confirmedTracks)]; %#ok<AGROW> 
+        colConfirmedTracks = [colConfirmedTracks; toStruct(confirmedTracks)]; %#ok<AGROW>
+        colConfirmedTracksGlob = [colConfirmedTracksGlob; toStruct(confirmedTracksGlob)]; %#ok<AGROW>
         colTentativeTracks = [colTentativeTracks;toStruct(tentativeTracks)]; %#ok<AGROW> 
     end
     % Get model probabilities from IMM filter of each track using
@@ -211,7 +261,7 @@ for i = 1:numel(lidarData)
     if abs(time - 18) < dT/2
         snapnow(displayObject);
     end
-
+    
 end
 positionListfromConfirmedTracks = getPositionAsList(colConfirmedTracks);
 % Write movie if requested
@@ -229,9 +279,28 @@ if displayObject.RecordGIF
 end
 
 convertedTracks = convertConfTrack(colConfirmedTracks);
-figure
-scatter(convertedTracks(:,1),...
-         convertedTracks(:,2));
+convertedTracksGlob = convertConfTrack(colConfirmedTracksGlob);
+
+figure;
+swarmchart(convertedTracks(:,1),...
+         convertedTracks(:,2),...
+         'filled','MarkerFaceAlpha',0.5,'MarkerEdgeAlpha',0.5);
+axis([round(min(convertedTracks(:,1))-10),...
+      round((max(convertedTracks(:,1))+10)),... %inf,inf]);
+      round(min(convertedTracks(:,2))),...
+      round((max(convertedTracks(:,2))))]);
+axis equal
+
+
+figure;
+scatter(convertedTracksGlob(:,1),...
+         convertedTracksGlob(:,2),...
+         'filled','MarkerFaceAlpha',0.5,'MarkerEdgeAlpha',0.5);
+axis([round(min(convertedTracksGlob(:,1))-10),...
+      round((max(convertedTracksGlob(:,1))+10)),... %inf,inf]);
+      round(min(convertedTracksGlob(:,2))),...
+      round((max(convertedTracksGlob(:,2))))]);
+axis equal
 
 
 
