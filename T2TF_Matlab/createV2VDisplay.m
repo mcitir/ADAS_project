@@ -34,25 +34,30 @@ for i = 1:numel(sensors)
     end
 end
 plotters.veh1DetPlotter = detectionPlotter(bep{1}, 'DisplayName', 'Detections',...
-    'MarkerEdgeColor', 'black', 'MarkerFaceColor', 'black');
+    'MarkerEdgeColor', '#00FFFF', 'Marker','x');
+plotters.veh2DetPlotter = detectionPlotter(bep{2}, 'DisplayName', 'Detections',...
+    'MarkerEdgeColor', '#00FFFF', 'Marker','x');
+plotters.veh3DetPlotter = detectionPlotter(bep{3}, 'DisplayName', 'Detections',...
+    'MarkerEdgeColor', '#00FFFF', 'Marker','x');
+
+% Local Tracks
 plotters.veh1TrkPlotter = trackPlotter(bep{1}, 'DisplayName', 'Local Tracks',...
-    'MarkerEdgeColor', 'black');
+    'MarkerEdgeColor', 'red','Marker', '+');
 plotters.veh2TrkPlotter = trackPlotter(bep{2}, 'DisplayName', 'Local Tracks',...
-    'MarkerEdgeColor', 'black', 'MarkerFaceColor', 'black');
+    'MarkerEdgeColor', 'red','Marker', '+');
 plotters.veh3TrkPlotter = trackPlotter(bep{3}, 'DisplayName', 'Local Tracks',...
-    'MarkerEdgeColor', 'black', 'MarkerFaceColor', 'black');
-plotters.veh1FusePlotter = trackPlotter(bep{1}, 'DisplayName', 'Fuser Tracks',...
-    'MarkerEdgeColor', 'black', 'Marker', 'd');
-plotters.veh2FusePlotter = trackPlotter(bep{2}, 'DisplayName', 'Fuser Tracks',...
-    'MarkerEdgeColor', 'black', 'Marker', 'd');
-plotters.veh3FusePlotter = trackPlotter(bep{3}, 'DisplayName', 'Fuser Tracks',...
-    'MarkerEdgeColor', 'black', 'Marker', 'd');
+    'MarkerEdgeColor', 'red','Marker', '+');
+
+% Fuser Tracks
+plotters.veh1FusePlotter = trackPlotter(bep{1}, 'DisplayName', 'Fuser Tracks','HistoryDepth',7);
 plotters.ol1Plotter = outlinePlotter(bep{1});
 plotters.lb1Plotter = laneBoundaryPlotter(bep{1});
 
+plotters.veh2FusePlotter = trackPlotter(bep{2}, 'DisplayName', 'Fuser Tracks','HistoryDepth',7);
 plotters.ol2Plotter = outlinePlotter(bep{2});
 plotters.lb2Plotter = laneBoundaryPlotter(bep{2});
 
+plotters.veh3FusePlotter = trackPlotter(bep{3}, 'DisplayName', 'Fuser Tracks','HistoryDepth',7);
 plotters.ol3Plotter = outlinePlotter(bep{3});
 plotters.lb3Plotter = laneBoundaryPlotter(bep{3});
 
