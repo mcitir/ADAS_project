@@ -4,11 +4,9 @@ close all
 %% Track-to-Track Architecture
 ta = trackingArchitecture;
 
-
-
 % Create the tracker for vehicle 1
 v1Tracker = trackerJPDA('TrackerIndex',10, 'DeletionThreshold', [4 4],...
-     'AssignmentThreshold', [100 Inf],'TrackLogic','Integrated'); % Vehicle 1 tracker
+     'AssignmentThreshold', [100 Inf],'TrackLogic','History'); % Vehicle 1 tracker
 posSelector = [1 0 0 0 0 0; 0 0 1 0 0 0];
 addTracker(ta, v1Tracker, 'SensorIndices',[1,3],'ToOutput',false);
 
@@ -166,16 +164,15 @@ iGospa = 0;
 
 while running && ishghandle(f)
     time  = scenario.SimulationTime;
-    pause(0.2)
+    %pause(0.2)
 
     % Detect and track at the vehicle level
     [tracks1,wasTracker1Updated,detections1] = detectAndTrack(v1,time,posSelector);
     [tracks2,wasTracker2Updated,detections2] = detectAndTrack(v2,time,posSelector);
     [tracks3,wasTracker3Updated,detections3] = detectAndTrack(v3,time,posSelector);
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%
-    % Metrics Analysis
-
+    
+    %% Metrics Analysis
     % Evaluate GOSPA
     iGospa = iGospa + 1;
     
@@ -229,17 +226,6 @@ while running && ishghandle(f)
      gospaFused.vec3.missTarget(iGospa),...
      gospaFused.vec3.falseTracks(iGospa)]=...
      tgm(fusedTracks3, truthGospa(iGospa).ActorPoses);
-
-
-%     gospaLocal1(iGospa) = tgm(tracks1, truthGospa(iGospa).ActorPoses);
-%     gospaFused1(iGospa) = tgm(fusedTracks1, truthGospa(iGospa).ActorPoses);
-% 
-%     gospaLocal2(iGospa) = tgm(tracks2, truthGospa(iGospa).ActorPoses);
-%     gospaFused2(iGospa) = tgm(fusedTracks2, truthGospa(iGospa).ActorPoses);
-% 
-%     gospaLocal3(iGospa) = tgm(tracks3, truthGospa(iGospa).ActorPoses);
-%     gospaFused3(iGospa) = tgm(fusedTracks3, truthGospa(iGospa).ActorPoses);
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
     % Keep the tracks from the previous fuser update
@@ -342,10 +328,28 @@ rng(s)
 
 gospaFigure=figure;
 figure(gospaFigure);
-tiled=tiledlayout(3,3);
+tiled=tiledlayout(3,5);
 title(tiled,'Generalized optimal subpattern assignment (GOSPA) metric')
 
 % Vehicle1
+nexttile
+plot(gospaLocal.vec1.lgospa)
+hold on
+plot(gospaFused.vec1.lgospa)
+legend({'Local Tracks','Fused Tracks'},'Location','southwest')
+ylim([min([gospaLocal.vec1.lgospa,gospaFused.vec1.lgospa])-2,...
+      max([gospaLocal.vec1.lgospa,gospaFused.vec1.lgospa])+2])
+subtitle('GOSPA with Switchin Pen.')
+
+nexttile
+plot(gospaLocal.vec1.gospa)
+hold on
+plot(gospaFused.vec1.gospa)
+legend({'Local Tracks','Fused Tracks'},'Location','southwest')
+ylim([min([gospaLocal.vec1.gospa,gospaFused.vec1.gospa])-2,...
+      max([gospaLocal.vec1.gospa,gospaFused.vec1.gospa])+2])
+subtitle('GOSPA')
+
 nexttile
 plot(gospaLocal.vec1.localization)
 hold on
@@ -354,6 +358,7 @@ legend({'Local Tracks','Fused Tracks'},'Location','southwest')
 ylim([min([gospaLocal.vec1.localization,gospaFused.vec1.localization])-2,...
       max([gospaLocal.vec1.localization,gospaFused.vec1.localization])+2])
 subtitle('Localization')
+title('Vehicle 1')
 
 nexttile
 plot(gospaLocal.vec1.falseTracks)
@@ -363,7 +368,6 @@ legend({'Local Tracks','Fused Tracks'},'Location','southwest')
 ylim([min([gospaLocal.vec1.falseTracks,gospaFused.vec1.falseTracks])-2,...
       max([gospaLocal.vec1.falseTracks,gospaFused.vec1.falseTracks])+2])
 subtitle('False Tracks')
-title('Vehicle 1')
 
 nexttile
 plot(gospaLocal.vec1.missTarget)
@@ -376,6 +380,24 @@ subtitle('Miss Target')
 
 % Vehicle2
 nexttile
+plot(gospaLocal.vec2.lgospa)
+hold on
+plot(gospaFused.vec2.lgospa)
+legend({'Local Tracks','Fused Tracks'},'Location','southwest')
+ylim([min([gospaLocal.vec2.lgospa,gospaFused.vec2.lgospa])-2,...
+      max([gospaLocal.vec2.lgospa,gospaFused.vec2.lgospa])+2])
+subtitle('GOSPA with Switchin Pen.')
+
+nexttile
+plot(gospaLocal.vec2.gospa)
+hold on
+plot(gospaFused.vec2.gospa)
+legend({'Local Tracks','Fused Tracks'},'Location','southwest')
+ylim([min([gospaLocal.vec2.gospa,gospaFused.vec2.gospa])-2,...
+      max([gospaLocal.vec2.gospa,gospaFused.vec2.gospa])+2])
+subtitle('GOSPA')
+
+nexttile
 plot(gospaLocal.vec2.localization)
 hold on
 plot(gospaFused.vec2.localization)
@@ -383,6 +405,7 @@ legend({'Local Tracks','Fused Tracks'},'Location','southwest')
 ylim([min([gospaLocal.vec2.localization,gospaFused.vec2.localization])-2,...
       max([gospaLocal.vec2.localization,gospaFused.vec2.localization])+2])
 subtitle('Localization')
+title('Vehicle 2')
 
 nexttile
 plot(gospaLocal.vec2.falseTracks)
@@ -392,7 +415,6 @@ legend({'Local Tracks','Fused Tracks'},'Location','southwest')
 ylim([min([gospaLocal.vec2.falseTracks,gospaFused.vec2.falseTracks])-2,...
       max([gospaLocal.vec2.falseTracks,gospaFused.vec2.falseTracks])+2])
 subtitle('False Tracks')
-title('Vehicle 2')
 
 nexttile
 plot(gospaLocal.vec2.missTarget)
@@ -405,6 +427,24 @@ subtitle('Miss Target')
 
 % Vehicle3
 nexttile
+plot(gospaLocal.vec3.lgospa)
+hold on
+plot(gospaFused.vec3.lgospa)
+legend({'Local Tracks','Fused Tracks'},'Location','southwest')
+ylim([min([gospaLocal.vec3.lgospa,gospaFused.vec3.lgospa])-2,...
+      max([gospaLocal.vec3.lgospa,gospaFused.vec3.lgospa])+2])
+subtitle('GOSPA with Switchin Pen.')
+
+nexttile
+plot(gospaLocal.vec3.gospa)
+hold on
+plot(gospaFused.vec3.gospa)
+legend({'Local Tracks','Fused Tracks'},'Location','southwest')
+ylim([min([gospaLocal.vec3.gospa,gospaFused.vec3.gospa])-2,...
+      max([gospaLocal.vec3.gospa,gospaFused.vec3.gospa])+2])
+subtitle('GOSPA')
+
+nexttile
 plot(gospaLocal.vec3.localization)
 hold on
 plot(gospaFused.vec3.localization)
@@ -412,6 +452,7 @@ legend({'Local Tracks','Fused Tracks'},'Location','southwest')
 ylim([min([gospaLocal.vec3.localization,gospaFused.vec3.localization])-2,...
       max([gospaLocal.vec3.localization,gospaFused.vec3.localization])+2])
 subtitle('Localization')
+title('Vehicle 3')
 
 nexttile
 plot(gospaLocal.vec3.falseTracks)
@@ -421,7 +462,6 @@ legend({'Local Tracks','Fused Tracks'},'Location','southwest')
 ylim([min([gospaLocal.vec3.falseTracks,gospaFused.vec3.falseTracks])-2,...
       max([gospaLocal.vec3.falseTracks,gospaFused.vec3.falseTracks])+2])
 subtitle('False Tracks')
-title('Vehicle 3')
 
 nexttile
 plot(gospaLocal.vec3.missTarget)
