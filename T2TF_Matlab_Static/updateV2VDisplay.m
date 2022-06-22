@@ -4,7 +4,7 @@ function updateV2VDisplay(plotters, scenario, sensors, attachedVehicle)
 % get the road boundaries and rectangular outlines
 rb = roadBoundaries(scenario);
 [position, yaw, length, width, originOffset, color] = targetOutlines(scenario.Actors(1));
-position = position + scenario.Actors(1).Position(1:2);
+position = position + scenario.Actors(1).Position(1:2); % Calculates global pos of actors
 
 % update the bird's-eye plotters with the road and actors
 plotLaneBoundary(plotters.lb1Plotter, rb);
@@ -21,7 +21,7 @@ for i = 1:numel(sensors)
     shift = scenario.Actors(attachedVehicle(i)).Position(1:2);
     if isa(sensors{i},'radarDataGenerator') || isa(sensors{i},'drivingRadarDataGenerator')
         plotCoverageArea(plotters.SensorPlotter(i), sensors{i}.MountingLocation(1:2) + shift,...
-            sensors{i}.RangeLimits(2), sensors{i}.MountingLocation(3),...
+            sensors{i}.RangeLimits(2), sensors{i}.MountingAngles(3),...
             sensors{i}.FieldOfView(1));
     else
         plotCoverageArea(plotters.SensorPlotter(i), sensors{i}.SensorLocation + shift,...

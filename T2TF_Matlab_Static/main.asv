@@ -81,9 +81,11 @@ wasFuser3Updated = false;
 
 % Create all the sensors
 [sensors, numSensors, attachedVehicle] = createSensors(scenario);
-
+sensors{1,2}.MountingAngles = [0 0 -90];
+sensors{1,4}.MountingAngles = [0 0 180];
 % Create display
 [f,plotters] = createV2VDisplay(scenario, sensors, attachedVehicle);
+f.Visible = 'on';
 
 % Define each vehicle as a combination of an actor, sensors, a tracker, and plotters
 v1=struct('Actor',{vehicle1},'Sensors',{sensors(attachedVehicle==1)},'Tracker',{v1Tracker},'DetPlotter',{plotters.veh1DetPlotter},'TrkPlotter',{plotters.veh1TrkPlotter});
@@ -97,10 +99,9 @@ running = true;
 % For repeatable results, set the random number seed
 s = rng;
 rng(2019)
-snaptimes = [0.5, 2.8, 4.4, 6.3, inf];
-snaps = cell(numel(snaptimes,1));
+%snaptimes = [0.5, 2.8, 4.4, 6.3, inf];
+%snaps = cell(numel(snaptimes,1));
 i = 1;
-f.Visible = 'on';
 
 truthGospa = record(scenario); % For Metrics Analysis
 restart(scenario)
@@ -297,11 +298,11 @@ while running && ishghandle(f)
     % Advance the scenario one time step and exit the loop if the scenario is complete
     running = advance(scenario);
 
-    % Capture an image of the frame at specified times
-    if time >= snaptimes(i)
-        snaps{i} = takesnap(f);
-        i = i + 1;
-    end
+%     % Capture an image of the frame at specified times
+%     if time >= snaptimes(i)
+%         snaps{i} = takesnap(f);
+%         i = i + 1;
+%     end
 end
 
 %% Analyze 
