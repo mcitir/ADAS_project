@@ -18,7 +18,7 @@ set(p3.Children(1),'Position',[0.35 0.95 0.3 0.0345],'Orientation','horizontal',
 
 for i = 1:numel(sensors)
     shift = scenario.Actors(attachedVehicle(i)).Position(1:2);
-    name = "";     %Vehicle " + string(attachedVehicle(i));
+    name = "";
     if isa(sensors{i},'radarDataGenerator') || isa(sensors{i},'drivingRadarDataGenerator')
         plotters.SensorPlotter(i) = coverageAreaPlotter(bep{attachedVehicle(i)}, 'DisplayName',...
             name + " radar", 'FaceColor', [0.4660 0.6740 0.1880], 'FaceAlpha',0.1);

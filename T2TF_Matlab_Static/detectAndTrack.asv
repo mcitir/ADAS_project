@@ -1,4 +1,4 @@
-function [tracks,wasTrackerUpdated,detections] = detectAndTrack(agent,time,posSelector)
+function [tracks,wasTrackerUpdated,detections] = detectAndTrack(agent,time,posSe    lector)
 % Create detections from the vehicle
 poses = targetPoses(agent.Actor); % returns the poses of all targets in a driving...
                                   % scenario with respect to the ego vehicle actor

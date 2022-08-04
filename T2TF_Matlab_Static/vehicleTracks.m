@@ -20,13 +20,14 @@ for sensorIndex = 1:numSensors
 end
 wasTrackerUpdated = any(isValidTime);
 
-if ~wasTrackerUpdated % No vehicle tracking sensor udpated
+if ~wasTrackerUpdated % No vehicle tracking sensor updated
     return
 end
 
 % Add vehicle position and velocity to track state parameters
 for i = 1:numel(tracks)
-    tracks(i).StateParameters.OriginPosition = tracks(i).StateParameters.OriginPosition + actor.Position';
+    % Coordinate Frame change is here. Only translation
+    tracks(i).StateParameters.OriginPosition = tracks(i).StateParameters.OriginPosition + actor.Position'; 
     tracks(i).StateParameters.OriginVelocity = tracks(i).StateParameters.OriginVelocity + actor.Velocity';
 end
 
@@ -34,6 +35,6 @@ end
 if numel(tracks)>0
     trPos = arrayfun(@(t)t.State([1,3]), tracks, 'UniformOutput', false);
     trPos = cell2mat(trPos')' + actor.Position(1:2);
-    plotTrack(plotter, trPos);
+    plotTrack(plotter, trPos); % Plot here
 end
 end
