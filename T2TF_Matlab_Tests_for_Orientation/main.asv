@@ -1,7 +1,7 @@
-%% Clear
-% clear
-% clc
-% close all
+% Clear
+clear
+clc
+close all
 
 %% Configuration
 ta = trackingArchitecture;
@@ -23,7 +23,7 @@ v2Sources = {v2TrackerConfiguration; v1FuserConfiguration; v3FuserConfiguration}
 
 % Vehicle 3
 v3TrackerConfiguration = fuserSourceConfiguration('SourceIndex',4,'IsInternalSource',true);   % v3Tracker is internal to v3Fuser
-    "CentralToLocalTransformFcn", @scenarioToEgo, 'LocalToCentralTransformFcn', @egoToScenario); % Coordinate transformation
+    %"CentralToLocalTransformFcn", @scenarioToEgo, 'LocalToCentralTransformFcn', @egoToScenario); % Coordinate transformation
 v3Sources = {v3TrackerConfiguration; v1FuserConfiguration; v2FuserConfiguration};
 
 %% Track Fuser Object Generation
@@ -98,9 +98,9 @@ while running && ishghandle(f)
     [tracks2,wasTracker2Updated,detections2] = detectAndTrack(v2,time);
     [tracks3,wasTracker3Updated,detections3] = detectAndTrack(v3,time);
     
-    tracksInScenario1 = egoToScenario(tracks1);
-    tracksInScenario2 = egoToScenario(tracks2);
-    tracksInScenario3 = egoToScenario(tracks3);
+%     tracksInScenario1 = egoToScenario(tracks1);
+%     tracksInScenario2 = egoToScenario(tracks2);
+%     tracksInScenario3 = egoToScenario(tracks3);
 
     % Keep the tracks from the previous fuser update
     oldFusedTracks1 = fusedTracks1;
@@ -159,6 +159,10 @@ while running && ishghandle(f)
     % Update the display
     %plotDetectionsAndTracks(agent.DetPlotter, detPos, agent.TrkPlotter, trkPos);
     updateV2VDisplay(plotters, scenario, sensors, attachedVehicle)
+    for plotIndex = 1:numel(tracks1)
+        trackState = [tracks1(plotIndex,1).State(1),tracks1(plotIndex,1).State(3),tracks1(plotIndex,1).State(5) 
+        plotTrack(v1.TrkPlotter,);
+    end
     running = advance(scenario);
 
 end

@@ -98,9 +98,9 @@ while running && ishghandle(f)
     [tracks2,wasTracker2Updated,detections2] = detectAndTrack(v2,time);
     [tracks3,wasTracker3Updated,detections3] = detectAndTrack(v3,time);
     
-    tracksInScenario1 = egoToScenario(tracks1);
-    tracksInScenario2 = egoToScenario(tracks2);
-    tracksInScenario3 = egoToScenario(tracks3);
+%     tracksInScenario1 = egoToScenario(tracks1);
+%     tracksInScenario2 = egoToScenario(tracks2);
+%     tracksInScenario3 = egoToScenario(tracks3);
 
     % Keep the tracks from the previous fuser update
     oldFusedTracks1 = fusedTracks1;
@@ -159,6 +159,11 @@ while running && ishghandle(f)
     % Update the display
     %plotDetectionsAndTracks(agent.DetPlotter, detPos, agent.TrkPlotter, trkPos);
     updateV2VDisplay(plotters, scenario, sensors, attachedVehicle)
+    for plotIndex = 1:numel(tracks1)
+        trackState = [tracks1(plotIndex,1).State(1),...
+                      tracks1(plotIndex,1).State(3)]; 
+        plotTrack(v1.TrkPlotter,trackState);
+    end
     running = advance(scenario);
 
 end
