@@ -29,9 +29,9 @@ function d = setAtt(d, actor)
     % Set the attributes to be a structure
     d.ObjectAttributes = struct;
     % Keep only the position measurement and remove velocity
-    if numel(d.Measurement)==6
-        d.Measurement = d.Measurement(1:3);
-        d.MeasurementNoise = d.MeasurementNoise(1:3,1:3);
+    if ~isstruct(d.MeasurementParameters)
+        %d.Measurement = d.Measurement(1:3);
+        %d.MeasurementNoise = d.MeasurementNoise(1:3,1:3);
     
         d.MeasurementParameters{1}.OriginPosition = actor.Position;
         d.MeasurementParameters{1}.OriginVelocity = actor.Velocity;
@@ -45,7 +45,7 @@ function d = setAtt(d, actor)
         d.MeasurementParameters{1}.HasElevation = false;
         d.MeasurementParameters{1}.HasAzimuth = false;
         d.MeasurementParameters{1}.HasRange = true;
-        d.MeasurementParameters{1}.HasVelocity = false;
+        d.MeasurementParameters{1}.HasVelocity = true;
     else
         d.MeasurementParameters.OriginPosition = actor.Position;
         d.MeasurementParameters.OriginVelocity = actor.Velocity;
@@ -59,6 +59,7 @@ function d = setAtt(d, actor)
         d.MeasurementParameters.HasElevation = false;
         d.MeasurementParameters.HasAzimuth = false;
         d.MeasurementParameters.HasRange = true;
-        d.MeasurementParameters.HasVelocity = false;
+        d.MeasurementParameters.HasRangeRate = true;
+        d.MeasurementParameters.HasVelocity = true;
     end
 end
