@@ -160,10 +160,21 @@ while running && ishghandle(f)
     %plotDetectionsAndTracks(agent.DetPlotter, detPos, agent.TrkPlotter, trkPos);
     updateV2VDisplay(plotters, scenario, sensors, attachedVehicle)
     for plotIndex = 1:numel(tracks1)
-        trackState = [tracks1(plotIndex,1).State(1),...
+        trackState1 = [tracks1(plotIndex,1).State(1),...
                       tracks1(plotIndex,1).State(3)]; 
-        plotTrack(v1.TrkPlotter,trackState);
+        plotTrack(v1.TrkPlotter,trackState1);
     end
+    for plotIndex = 1:numel(tracks2)
+        trackState2 = [tracks2(plotIndex,1).State(1),...
+                      tracks2(plotIndex,1).State(3)]; 
+        plotTrack(v2.TrkPlotter,trackState2);
+    end
+    for plotIndex = 1:numel(tracks1)
+        trackState3 = [tracks1(plotIndex,1).State(1),...
+                      tracks1(plotIndex,1).State(3)]; 
+        plotTrack(v3.TrkPlotter,trackState3);
+    end
+            
     running = advance(scenario);
 
 end

@@ -7,18 +7,29 @@ isValidTime = false(1, numSensors);
 for sensorIndex = 1:numSensors
     sensor = sensors{sensorIndex};
     % Check is a camera or a radar which does not generate detection as tracks 
-    if isa(sensor, 'visionDetectionGenerator') || ~strcmpi(sensor.TargetReportFormat,'Tracks')
-        % Generates sensor detections for actors except ego vehicle
-        [objectDets, ~, sensorConfig] = sensor(poses, time); 
-
-        if islogical(sensorConfig)
-            isValidTime(sensorIndex) = sensorConfig;
-        else
-            isValidTime(sensorIndex) = sensorConfig.IsValidTime;
+    if isa(sensor, 'visionDetectionGenerator') || isa(sensor, 'radarDataGenerator')  
+        if ~strcmpi(sensor.TargetReportFormat,'Tracks')
+            % Generates sensor detections for actors except ego vehicle
+            [objectDets, ~, sensorConfig] = sensor(poses, time); 
+    
+            if islogical(sensorConfig)
+                isValidTime(sensorIndex) = sensorConfig;
+            else
+                isValidTime(sensorIndex) = sensorConfig.IsValidTime;
+            end
+            if ~iscell(objectDets)
+                for dets=1:numel(objectDets)
+                    objectDetsTemp{dets,1} = objectDets(dets);%#ok<AGROW>
+                    objectDets = cellfun(@(d) setAtt(d,actor), objectDetsTemp, 'UniformOutput', false);
+                    numObjects = numel(objectDets);
+                    objectDetections = [objectDetections; objectDets(1:numObjects)]; %#ok<AGROW>
+                end
+            else
+                    objectDets = cellfun(@(d) setAtt(d,actor), objectDets, 'UniformOutput', false);
+                    numObjects = numel(objectDets);
+                    objectDetections = [objectDetections; objectDets(1:numObjects)]; %#ok<AGROW>
+            end
         end
-        objectDets = cellfun(@(d) setAtt(d,actor), objectDets, 'UniformOutput', false);
-        numObjects = numel(objectDets);
-        objectDetections = [objectDetections; objectDets(1:numObjects)]; %#ok<AGROW>
     end
 end
 isValid = any(isValidTime);
@@ -30,8 +41,8 @@ function d = setAtt(d, actor)
     d.ObjectAttributes = struct;
     % Keep only the position measurement and remove velocity
     if ~isstruct(d.MeasurementParameters)
-        %d.Measurement = d.Measurement(1:3);
-        %d.MeasurementNoise = d.MeasurementNoise(1:3,1:3);
+        d.Measurement = d.Measurement(1:3);
+        d.MeasurementNoise = d.MeasurementNoise(1:3,1:3);
     
         d.MeasurementParameters{1}.OriginPosition = actor.Position;
         d.MeasurementParameters{1}.OriginVelocity = actor.Velocity;
@@ -44,8 +55,8 @@ function d = setAtt(d, actor)
         d.MeasurementParameters{1}.IsParentToChild = true;
         d.MeasurementParameters{1}.HasElevation = false;
         d.MeasurementParameters{1}.HasAzimuth = false;
-        d.MeasurementParameters{1}.HasRange = true;
-        d.MeasurementParameters{1}.HasVelocity = true;
+        %d.MeasurementParameters{1}.HasRange = true;
+        d.MeasurementParameters{1}.HasVelocity = false;
     else
         d.MeasurementParameters.OriginPosition = actor.Position;
         d.MeasurementParameters.OriginVelocity = actor.Velocity;
@@ -59,7 +70,7 @@ function d = setAtt(d, actor)
         d.MeasurementParameters.HasElevation = false;
         d.MeasurementParameters.HasAzimuth = false;
         d.MeasurementParameters.HasRange = true;
-        d.MeasurementParameters.HasRangeRate = true;
-        d.MeasurementParameters.HasVelocity = true;
+        %d.MeasurementParameters.HasRangeRate = true;
+        d.MeasurementParameters.HasVelocity = false;
     end
 end
