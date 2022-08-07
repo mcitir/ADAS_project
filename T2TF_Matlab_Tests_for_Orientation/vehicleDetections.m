@@ -7,29 +7,29 @@ isValidTime = false(1, numSensors);
 for sensorIndex = 1:numSensors
     sensor = sensors{sensorIndex};
     % Check is a camera or a radar which does not generate detection as tracks 
-    if isa(sensor, 'visionDetectionGenerator') || isa(sensor, 'radarDataGenerator')  
-        if ~strcmpi(sensor.TargetReportFormat,'Tracks')
-            % Generates sensor detections for actors except ego vehicle
-            [objectDets, ~, sensorConfig] = sensor(poses, time); 
-    
-            if islogical(sensorConfig)
-                isValidTime(sensorIndex) = sensorConfig;
-            else
-                isValidTime(sensorIndex) = sensorConfig.IsValidTime;
-            end
-            if ~iscell(objectDets)
-                for dets=1:numel(objectDets)
-                    objectDetsTemp{dets,1} = objectDets(dets);%#ok<AGROW>
-                    objectDets = cellfun(@(d) setAtt(d,actor), objectDetsTemp, 'UniformOutput', false);
-                    numObjects = numel(objectDets);
-                    objectDetections = [objectDetections; objectDets(1:numObjects)]; %#ok<AGROW>
-                end
-            else
-                    objectDets = cellfun(@(d) setAtt(d,actor), objectDets, 'UniformOutput', false);
-                    numObjects = numel(objectDets);
-                    objectDetections = [objectDetections; objectDets(1:numObjects)]; %#ok<AGROW>
-            end
+    if isa(sensor, 'visionDetectionGenerator') || isa(sensor, 'radarDataGenerator')  || ~strcmpi(sensor.TargetReportFormat,'Tracks')
+%         if ~strcmpi(sensor.TargetReportFormat,'Tracks')
+        % Generates sensor detections for actors except ego vehicle
+        [objectDets, ~, sensorConfig] = sensor(poses, time); 
+
+        if islogical(sensorConfig)
+            isValidTime(sensorIndex) = sensorConfig;
+        else
+            isValidTime(sensorIndex) = sensorConfig.IsValidTime;
         end
+        if ~iscell(objectDets)
+            for dets=1:numel(objectDets)
+                objectDetsTemp{dets,1} = objectDets(dets);%#ok<AGROW>
+                objectDets = cellfun(@(d) setAtt(d,actor), objectDetsTemp, 'UniformOutput', false);
+                numObjects = numel(objectDets);
+                objectDetections = [objectDetections; objectDets(1:numObjects)]; %#ok<AGROW>
+            end
+        else
+                objectDets = cellfun(@(d) setAtt(d,actor), objectDets, 'UniformOutput', false);
+                numObjects = numel(objectDets);
+                objectDetections = [objectDetections; objectDets(1:numObjects)]; %#ok<AGROW>
+        end
+        
     end
 end
 isValid = any(isValidTime);

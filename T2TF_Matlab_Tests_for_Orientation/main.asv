@@ -191,16 +191,20 @@ while running && ishghandle(f)
     end
     
     for detIndex = 1:numel(detections1)
-        detection1InScenario = egoToScenario(v1.Actor,detections1{detIndex, 1});
+        egoToScenario()
+        poseOfActor = deg2rad([v1.Actor.Yaw v1.Actor.Pitch v1.Actor.Roll]);
+        rot = eul2tform(poseOfActor, 'ZYX');
+        translation = trvec2tform(v1.Actor.Position);
+        transformation = translation * rot; 
+        detection1InScenario = transformation * [detections1{detIndex, 1}.Measurement;1];
+        
         plotDetection(plotters.veh1DetPlotter,detection1InScenario(1:2)')  
     end
     for detIndex = 1:numel(detections2)
-        detection2InScenario = egoToScenario(v2.Actor,detections2{detIndex, 1});
-        plotDetection(plotters.veh2DetPlotter,detection2InScenario(1:2)')  
+        plotDetection(plotters.veh2DetPlotter,detections2{detIndex, 1}.Measurement(1:2)')  
     end
     for detIndex = 1:numel(detections3)
-        detection3InScenario = egoToScenario(v3.Actor,detections3{detIndex, 1});
-        plotDetection(plotters.veh3DetPlotter,detection3InScenario(1:2)')  
+        plotDetection(plotters.veh3DetPlotter,detections3{detIndex, 1}.Measurement(1:2)')  
     end
     running = advance(scenario);
 
