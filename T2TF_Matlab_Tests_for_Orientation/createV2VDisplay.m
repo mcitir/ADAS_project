@@ -34,30 +34,30 @@ for i = 1:numel(sensors)
     end
 end
 plotters.veh1DetPlotter = detectionPlotter(bep{1}, 'DisplayName', 'Detections',...
-    'MarkerEdgeColor', '#00FFFF', 'Marker','x');
+    'MarkerEdgeColor', '#FF00FF', 'Marker','o','MarkerSize',20);
 plotters.veh2DetPlotter = detectionPlotter(bep{2}, 'DisplayName', 'Detections',...
-    'MarkerEdgeColor', '#00FFFF', 'Marker','x');
+    'MarkerEdgeColor', '#FF00FF', 'Marker','o','MarkerSize',20);
 plotters.veh3DetPlotter = detectionPlotter(bep{3}, 'DisplayName', 'Detections',...
-    'MarkerEdgeColor', '#00FFFF', 'Marker','x');
+    'MarkerEdgeColor', '#FF00FF', 'Marker','o','MarkerSize',20);
 
 % Local Tracks
 plotters.veh1TrkPlotter = trackPlotter(bep{1}, 'DisplayName', 'Local Tracks',...
-    'MarkerEdgeColor', 'red','Marker', '+');
+    'MarkerEdgeColor', 'red','Marker', '+','MarkerSize',30);
 plotters.veh2TrkPlotter = trackPlotter(bep{2}, 'DisplayName', 'Local Tracks',...
-    'MarkerEdgeColor', 'red','Marker', '+');
+    'MarkerEdgeColor', 'red','Marker', '+','MarkerSize',30);
 plotters.veh3TrkPlotter = trackPlotter(bep{3}, 'DisplayName', 'Local Tracks',...
-    'MarkerEdgeColor', 'red','Marker', '+');
+    'MarkerEdgeColor', 'red','Marker', '+','MarkerSize',30);
 
 % Fuser Tracks
-plotters.veh1FusePlotter = trackPlotter(bep{1}, 'DisplayName', 'Fuser Tracks','HistoryDepth',7);
+plotters.veh1FusePlotter = trackPlotter(bep{1}, 'DisplayName', 'Fuser Tracks','HistoryDepth',7,'Marker','square','MarkerSize',10);
 plotters.ol1Plotter = outlinePlotter(bep{1});
 plotters.lb1Plotter = laneBoundaryPlotter(bep{1});
 
-plotters.veh2FusePlotter = trackPlotter(bep{2}, 'DisplayName', 'Fuser Tracks','HistoryDepth',7);
+plotters.veh2FusePlotter = trackPlotter(bep{2}, 'DisplayName', 'Fuser Tracks','HistoryDepth',7,'Marker','square','MarkerSize',10);
 plotters.ol2Plotter = outlinePlotter(bep{2});
 plotters.lb2Plotter = laneBoundaryPlotter(bep{2});
 
-plotters.veh3FusePlotter = trackPlotter(bep{3}, 'DisplayName', 'Fuser Tracks','HistoryDepth',7);
+plotters.veh3FusePlotter = trackPlotter(bep{3}, 'DisplayName', 'Fuser Tracks','HistoryDepth',7,'Marker','square','MarkerSize',10);
 plotters.ol3Plotter = outlinePlotter(bep{3});
 plotters.lb3Plotter = laneBoundaryPlotter(bep{3});
 

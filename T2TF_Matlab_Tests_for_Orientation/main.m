@@ -98,12 +98,33 @@ restart(scenario)
 
 while running && ishghandle(f)
     time  = scenario.SimulationTime;
+    timeStr = 'T' + string(time);
+    timeStr = strrep(timeStr,'.','_');
+    allData.(timeStr).detections1InEgo = struct();
+    allData.(timeStr).detections2InEgo = struct();
+    allData.(timeStr).detections3InEgo = struct();
+    allData.(timeStr).detection1InScenario = struct();
+    allData.(timeStr).detection2InScenario = struct();
+    allData.(timeStr).detection3InScenario = struct();
+    allData.(timeStr).tracks1 = struct();
+    allData.(timeStr).tracks2 = struct();
+    allData.(timeStr).tracks3 = struct();
+    allData.(timeStr).fusedTrack1 = struct();
+    allData.(timeStr).fusedTrack2 = struct();
+    allData.(timeStr).fusedTrack3 = struct();
 
     % Detect and track at the vehicle body frame
     [tracks1,wasTracker1Updated,detections1] = detectAndTrack(v1,time);
     [tracks2,wasTracker2Updated,detections2] = detectAndTrack(v2,time);
     [tracks3,wasTracker3Updated,detections3] = detectAndTrack(v3,time);
     
+    allData.(timeStr).detections1InEgo = getState(detections1,'Measurement');
+    allData.(timeStr).detections2InEgo = getState(detections2,'Measurement');
+    allData.(timeStr).detections3InEgo = getState(detections3,'Measurement');
+    allData.(timeStr).tracks1 = getState(tracks1,'State');
+    allData.(timeStr).tracks2 = getState(tracks2,'State');
+    allData.(timeStr).tracks3 = getState(tracks3,'State');
+
 %     tracksInScenario1 = egoToScenario(tracks1);
 %     tracksInScenario2 = egoToScenario(tracks2);
 %     tracksInScenario3 = egoToScenario(tracks3);
@@ -168,10 +189,11 @@ while running && ishghandle(f)
         fusedTracks3 = objectTrack.empty(0,1);
     end
     
-    % Convert the Detections and the Tracks in Scenario Frame
-    
+    allData.(timeStr).fusedTrack1 = getState(fusedTracks1,'State');
+    allData.(timeStr).fusedTrack2 = getState(fusedTracks2,'State');
+    allData.(timeStr).fusedTrack3 = getState(fusedTracks3,'State');
 
-    % Update the display
+        % Update the display
     %plotDetectionsAndTracks(agent.DetPlotter, detPos, agent.TrkPlotter, trkPos);
     updateV2VDisplay(plotters, scenario, sensors, attachedVehicle)
     for plotIndex = 1:numel(tracks1)
@@ -184,24 +206,31 @@ while running && ishghandle(f)
                       tracks2(plotIndex,1).State(3)]; 
         plotTrack(v2.TrkPlotter,trackState2);
     end
-    for plotIndex = 1:numel(tracks1)
-        trackState3 = [tracks1(plotIndex,1).State(1),...
-                      tracks1(plotIndex,1).State(3)]; 
+    for plotIndex = 1:numel(tracks3)
+        trackState3 = [tracks3(plotIndex,1).State(1),...
+                      tracks3(plotIndex,1).State(3)]; 
         plotTrack(v3.TrkPlotter,trackState3);
     end
     
     for detIndex = 1:numel(detections1)
-        detection1InScenario = egoToScenario(v1.Actor,detections1{detIndex, 1});
-        plotDetection(plotters.veh1DetPlotter,detection1InScenario(1:2)')  
+        detection1InScenario(detIndex,:) = transpose(egoToScenario(v1.Actor,detections1{detIndex, 1}));  %#ok<SAGROW> 
     end
+    plotDetection(plotters.veh1DetPlotter,detection1InScenario(:,1:2))
+    
     for detIndex = 1:numel(detections2)
-        detection2InScenario = egoToScenario(v2.Actor,detections2{detIndex, 1});
-        plotDetection(plotters.veh2DetPlotter,detection2InScenario(1:2)')  
+        detection2InScenario(detIndex,:) = transpose(egoToScenario(v2.Actor,detections2{detIndex, 1})); %#ok<SAGROW>   
     end
+    plotDetection(plotters.veh2DetPlotter,detection2InScenario(:,1:2))
+    
     for detIndex = 1:numel(detections3)
-        detection3InScenario = egoToScenario(v3.Actor,detections3{detIndex, 1});
-        plotDetection(plotters.veh3DetPlotter,detection3InScenario(1:2)')  
+        detection3InScenario(detIndex,:) = transpose(egoToScenario(v3.Actor,detections3{detIndex, 1})); %#ok<SAGROW>   
     end
+    plotDetection(plotters.veh3DetPlotter,detection3InScenario(:,1:2))
+
+    allData.(timeStr).detection1InScenario = detection1InScenario;
+    allData.(timeStr).detection2InScenario = detection2InScenario;
+    allData.(timeStr).detection3InScenario = detection3InScenario;
+
     running = advance(scenario);
 
 end
