@@ -1,6 +1,8 @@
-function [objectDetections,isValid] = vehicleDetections(actor, sensors, poses, time)
+function [objectDetections, manipulatedObjectDetections, isValid] = vehicleDetections(actor, sensors, poses, time, manipulatedSensors)
 numSensors = numel(sensors);
 objectDetections = {};
+manipulatedObjectDetections = {};
+%manipulatedObjectDets = {};
 isValidTime = false(1, numSensors);
 
 % Generate detections for each sensor
@@ -22,12 +24,28 @@ for sensorIndex = 1:numSensors
                 objectDetsTemp{dets,1} = objectDets(dets);%#ok<AGROW>
                 objectDets = cellfun(@(d) setAtt(d,actor), objectDetsTemp, 'UniformOutput', false);
                 numObjects = numel(objectDets);
-                objectDetections = [objectDetections; objectDets(1:numObjects)]; %#ok<AGROW>
+                
+                if ismember(sensorIndex, manipulatedSensors)
+                    manipulatedObjectDets = manipulate(objectDets); % Manipulation
+                    objectDetections = [objectDetections; manipulatedObjectDets(1:numObjects)]; %#ok<AGROW>
+                else
+                    
+                    objectDetections = [objectDetections; objectDets(1:numObjects)]; %#ok<AGROW>
+                end
             end
         else
                 objectDets = cellfun(@(d) setAtt(d,actor), objectDets, 'UniformOutput', false);
                 numObjects = numel(objectDets);
-                objectDetections = [objectDetections; objectDets(1:numObjects)]; %#ok<AGROW>
+
+                if ismember(sensorIndex, manipulatedSensors)
+                    manipulatedObjectDets = manipulate(objectDets); % Manipulation
+                    manipulatedObjectDetections = [manipulatedObjectDetections; manipulatedObjectDets(1:numObjects)]; %#ok<AGROW>
+                    objectDetections = [objectDetections; objectDets(1:numObjects)]; %#ok<AGROW>
+                else
+                    manipulatedObjectDetections = [manipulatedObjectDetections; objectDets(1:numObjects)]; %#ok<AGROW>
+                    objectDetections = [objectDetections; objectDets(1:numObjects)]; %#ok<AGROW>
+                end
+
         end
         
     end

@@ -34,32 +34,60 @@ for i = 1:numel(sensors)
     end
 end
 plotters.veh1DetPlotter = detectionPlotter(bep{1}, 'DisplayName', 'Detections',...
-    'MarkerEdgeColor', '#FF00FF', 'Marker','o','MarkerSize',20);
+    'MarkerEdgeColor', '#000000', 'Marker','o','MarkerSize',20);
 plotters.veh2DetPlotter = detectionPlotter(bep{2}, 'DisplayName', 'Detections',...
-    'MarkerEdgeColor', '#FF00FF', 'Marker','o','MarkerSize',20);
+    'MarkerEdgeColor', '#000000', 'Marker','o','MarkerSize',20);
 plotters.veh3DetPlotter = detectionPlotter(bep{3}, 'DisplayName', 'Detections',...
-    'MarkerEdgeColor', '#FF00FF', 'Marker','o','MarkerSize',20);
+    'MarkerEdgeColor', '#000000', 'Marker','o','MarkerSize',20);
+
+plotters.veh1ManDetPlotter = detectionPlotter(bep{1}, 'DisplayName', 'Manipulated Detections',...
+    'MarkerEdgeColor', '#FF00FF', 'Marker','o','MarkerSize',15);
+plotters.veh2ManDetPlotter = detectionPlotter(bep{2}, 'DisplayName', 'Manipulated Detections',...
+    'MarkerEdgeColor', '#FF00FF', 'Marker','o','MarkerSize',15);
+plotters.veh3ManDetPlotter = detectionPlotter(bep{3}, 'DisplayName', 'Manipulated Detections',...
+    'MarkerEdgeColor', '#FF00FF', 'Marker','o','MarkerSize',15);
 
 % Local Tracks
 plotters.veh1TrkPlotter = trackPlotter(bep{1}, 'DisplayName', 'Local Tracks',...
-    'MarkerEdgeColor', 'red','Marker', '+','MarkerSize',30);
+    'MarkerEdgeColor', '#000000','Marker', '+','MarkerSize',30);
 plotters.veh2TrkPlotter = trackPlotter(bep{2}, 'DisplayName', 'Local Tracks',...
-    'MarkerEdgeColor', 'red','Marker', '+','MarkerSize',30);
+    'MarkerEdgeColor', '#000000','Marker', '+','MarkerSize',30);
 plotters.veh3TrkPlotter = trackPlotter(bep{3}, 'DisplayName', 'Local Tracks',...
-    'MarkerEdgeColor', 'red','Marker', '+','MarkerSize',30);
+    'MarkerEdgeColor', '#000000','Marker', '+','MarkerSize',30);
+
+plotters.veh1ManTrkPlotter = trackPlotter(bep{1}, 'DisplayName', 'Manipulated Local Tracks',...
+    'MarkerEdgeColor', '#FF00FF','Marker', '+','MarkerSize',20);
+plotters.veh2ManTrkPlotter = trackPlotter(bep{2}, 'DisplayName', 'Manipulated Local Tracks',...
+    'MarkerEdgeColor', '#FF00FF','Marker', '+','MarkerSize',20);
+plotters.veh3ManTrkPlotter = trackPlotter(bep{3}, 'DisplayName', 'Manipulated Local Tracks',...
+    'MarkerEdgeColor', '#FF00FF','Marker', '+','MarkerSize',20);
 
 % Fuser Tracks
-plotters.veh1FusePlotter = trackPlotter(bep{1}, 'DisplayName', 'Fuser Tracks','HistoryDepth',7,'Marker','square','MarkerSize',10);
+plotters.veh1FusePlotter = trackPlotter(bep{1}, 'DisplayName', 'Fuser Tracks','HistoryDepth',7,'Marker','square','MarkerSize',10,'MarkerEdgeColor', '#000000');
 plotters.ol1Plotter = outlinePlotter(bep{1});
 plotters.lb1Plotter = laneBoundaryPlotter(bep{1});
 
-plotters.veh2FusePlotter = trackPlotter(bep{2}, 'DisplayName', 'Fuser Tracks','HistoryDepth',7,'Marker','square','MarkerSize',10);
+plotters.veh2FusePlotter = trackPlotter(bep{2}, 'DisplayName', 'Fuser Tracks','HistoryDepth',7,'Marker','square','MarkerSize',10,'MarkerEdgeColor', '#000000');
 plotters.ol2Plotter = outlinePlotter(bep{2});
 plotters.lb2Plotter = laneBoundaryPlotter(bep{2});
 
-plotters.veh3FusePlotter = trackPlotter(bep{3}, 'DisplayName', 'Fuser Tracks','HistoryDepth',7,'Marker','square','MarkerSize',10);
+plotters.veh3FusePlotter = trackPlotter(bep{3}, 'DisplayName', 'Fuser Tracks','HistoryDepth',7,'Marker','square','MarkerSize',10,'MarkerEdgeColor', '#000000');
 plotters.ol3Plotter = outlinePlotter(bep{3});
 plotters.lb3Plotter = laneBoundaryPlotter(bep{3});
+
+
+plotters.veh1ManFusePlotter = trackPlotter(bep{1}, 'DisplayName', 'Manipulated Fuser Tracks','HistoryDepth',7,'Marker','square','MarkerSize',7,'MarkerEdgeColor', '#FF00FF');
+plotters.ol1Plotter = outlinePlotter(bep{1});
+plotters.lb1Plotter = laneBoundaryPlotter(bep{1});
+
+plotters.veh2ManFusePlotter = trackPlotter(bep{2}, 'DisplayName', 'Manipulated Fuser Tracks','HistoryDepth',7,'Marker','square','MarkerSize',7,'MarkerEdgeColor', '#FF00FF');
+plotters.ol2Plotter = outlinePlotter(bep{2});
+plotters.lb2Plotter = laneBoundaryPlotter(bep{2});
+
+plotters.veh3ManFusePlotter = trackPlotter(bep{3}, 'DisplayName', 'Manipulated Fuser Tracks','HistoryDepth',7,'Marker','square','MarkerSize',7,'MarkerEdgeColor', '#FF00FF');
+plotters.ol3Plotter = outlinePlotter(bep{3});
+plotters.lb3Plotter = laneBoundaryPlotter(bep{3});
+
 
 rb = roadBoundaries(scenario);
 [position, yaw, length, width, originOffset, color] = targetOutlines(scenario.Actors(1));
