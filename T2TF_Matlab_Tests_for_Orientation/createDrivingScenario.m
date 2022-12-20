@@ -12,13 +12,13 @@ road(scenario, roadCenters, roadWidth);
 
 
 % Add the ego vehicle
-egoVehicle = vehicle(scenario, 'ClassID', 1, 'Position', [36 -3 0], 'PlotColor', [0 0.7410 0.4470]);
+egoVehicle = vehicle(scenario, 'ClassID', 1, 'Position', [25 -3 0], 'PlotColor', [0 0.7410 0.4470]);
 
 % Add the second vehicle
-secondVehicle = vehicle(scenario, 'ClassID', 1, 'Position', [47 12 0],'Yaw', -90);
+secondVehicle = vehicle(scenario, 'ClassID', 1, 'Position', [47 25 0],'Yaw', -90);
 
 % Add the third vehicle
-thirdVehicle = vehicle(scenario, 'ClassID', 1, 'Position', [62.4 3 0],'Yaw', 180);
+thirdVehicle = vehicle(scenario, 'ClassID', 1, 'Position', [70 3 0],'Yaw', 180);
 
 % Add a dynamic vehicle
 dynamicVehicle = vehicle(scenario, 'ClassID', 1, 'Position', [54 -50 0]);
