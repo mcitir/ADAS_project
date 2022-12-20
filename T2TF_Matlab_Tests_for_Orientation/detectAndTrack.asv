@@ -7,12 +7,7 @@ poses = targetPoses(agent.Actor);
 %manipulatedDetections = manipulate(detections, "detections", agent.Manipulated);
 if sum(agent.Manipulated) ~= 0 && size(detections,1) ~= 0
     detections{end+1,1} = detections{1,1};
-    % detections{end}.Measurement = [25; -3; 0];
-    detections{end,1}.MeasurementNoise = 100.*detections{1,1}.MeasurementNoise;
-    detections{end}.Measurement = [25; 5; 0];
-    detections{end+1, 1} = detections{end};
-    detections{end+1, 1} = detections{end};
-    detections{end+1, 1} = detections{end};
+    detections{end}.Measurement = [25; 10; 0];
 end
 % Find tracks from detections
 if isValid

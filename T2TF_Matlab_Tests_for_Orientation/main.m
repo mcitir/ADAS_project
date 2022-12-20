@@ -152,12 +152,12 @@ wasManipulatedFuser3Updated = false;
 f.Visible = 'on';
 
 % Define each vehicle as a combination of an actor, sensors, a tracker, and plotters
-v1=struct('Actor',{vehicle1},'Sensors',{sensors(attachedVehicle==1)},'Manipulated',{[2]},...
+v1=struct('Actor',{vehicle1},'Sensors',{sensors(attachedVehicle==1)},'Manipulated',{[]},...
     'Tracker',{v1Tracker},'ManipulatedTracker',{v1ManipulatedTracker},...
     'DetPlotter',{plotters.veh1DetPlotter},'ManDetPlotter',{plotters.veh1ManDetPlotter},...
     'TrkPlotter',{plotters.veh1TrkPlotter},'ManTrkPlotter',{plotters.veh1ManTrkPlotter});
 
-v2=struct('Actor',{vehicle2},'Sensors',{sensors(attachedVehicle==2)},'Manipulated',{[]},...
+v2=struct('Actor',{vehicle2},'Sensors',{sensors(attachedVehicle==2)},'Manipulated',{[2]},...
     'Tracker',{v2Tracker},'ManipulatedTracker',{v2ManipulatedTracker},...
     'DetPlotter',{plotters.veh2DetPlotter},'ManDetPlotter',{plotters.veh2ManDetPlotter},...
     'TrkPlotter',{plotters.veh2TrkPlotter},'ManTrkPlotter',{plotters.veh2ManTrkPlotter});
@@ -233,29 +233,31 @@ while running && ishghandle(f)
         if isLocked(v1Fuser) || ~isempty(tracksToFuse1)
             [fusedTracks1,~,allTracks1,info1] = v1Fuser(tracksToFuse1,time);
             
-            disp(timeStr)
-            disp(info1.Assignments)
-            disp(info1.CostMatrix)
-            disp('Old central')
-            disp([oldFusedTracks1.State])
-            disp('Tracks to fuse')
-            disp([tracksToFuse1.State])
-            disp('Fused Tracks')
-            disp([fusedTracks1.State])
+%             disp(timeStr)
+%             disp(info1.Assignments)
+%             disp(info1.CostMatrix)
+%             disp('Old central')
+%             disp([oldFusedTracks1.State])
+%             disp('Tracks to fuse')
+%             disp([tracksToFuse1.State])
+%             disp('Fused Tracks')
+%             disp([fusedTracks1.State])
 
             wasFuser1Updated = true;
             pos = getTrackPositions(fusedTracks1,posSelector);
             ids = string([fusedTracks1.TrackID]');
             plotTrack(plotters.veh1FusePlotter,pos,ids);
 
-            % allAxes = findall(0,'type','axes');
             gca = gcf().Children(3).Children(2);
             for ii=1:size(info1.Assignments,1)
                 t1 = fusedTracks1([fusedTracks1.TrackID] == info1.Assignments(ii,1));
                 t2 = tracksToFuse1(info1.Assignments(ii,2));
+                if size(t1, 1) == 0
+                    continue
+                end
                 x = [t1.State(1) t2.State(1)];
                 y = [t1.State(3) t2.State(3)];
-                line(x,y,'Color','r')
+                line(gca, x,y,'Color','r')
             end
         else
             wasFuser1Updated = false;
@@ -298,6 +300,18 @@ while running && ishghandle(f)
             pos = getTrackPositions(fusedTracks2,posSelector);
             ids = string([fusedTracks2.TrackID]');
             plotTrack(plotters.veh2FusePlotter,pos,ids);
+
+            gca = gcf().Children(2).Children(2);
+            for ii=1:size(info2.Assignments,1)
+                t1 = fusedTracks2([fusedTracks2.TrackID] == info2.Assignments(ii,1));
+                t2 = tracksToFuse2(info2.Assignments(ii,2));
+                if size(t1, 1) == 0
+                    continue
+                end
+                x = [t1.State(1) t2.State(1)];
+                y = [t1.State(3) t2.State(3)];
+                line(gca, x,y,'Color','r')
+            end
         else
             wasFuser2Updated = false;
             fusedTracks2 = objectTrack.empty(0,1);
@@ -337,6 +351,18 @@ while running && ishghandle(f)
             pos = getTrackPositions(fusedTracks3,posSelector);
             ids = string([fusedTracks3.TrackID]');
             plotTrack(plotters.veh3FusePlotter,pos,ids);
+
+            gca = gcf().Children(1).Children(2);
+            for ii=1:size(info3.Assignments,1)
+                t1 = fusedTracks3([fusedTracks3.TrackID] == info3.Assignments(ii,1));
+                t2 = tracksToFuse3(info3.Assignments(ii,2));
+                if size(t1, 1) == 0
+                    continue
+                end
+                x = [t1.State(1) t2.State(1)];
+                y = [t1.State(3) t2.State(3)];
+                line(gca, x,y,'Color','r')
+            end
         else
             wasFuser3Updated = false;
             fusedTracks3 = objectTrack.empty(0,1);
