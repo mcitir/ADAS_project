@@ -8,7 +8,7 @@ poses = targetPoses(agent.Actor);
 if sum(agent.Manipulated) ~= 0 && size(detections,1) ~= 0
     detections{end+1,1} = detections{1,1};
     % detections{end}.Measurement = [25; -3; 0];
-    detections{end,1}.MeasurementNoise = 100.*detections{1,1}.MeasurementNoise;
+    detections{end,1}.MeasurementNoise = 1.*detections{1,1}.MeasurementNoise;
     detections{end}.Measurement = [25; 5; 0];
     detections{end+1, 1} = detections{end};
     detections{end+1, 1} = detections{end};
